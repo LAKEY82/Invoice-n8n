@@ -1,0 +1,61 @@
+# Render Blueprint for the n8n service (free plan).
+# Deploy: Render dashboard → New → Blueprint → select this repo → set render.yaml path to n8n/render.yaml.
+# Persistence lives in an EXTERNAL PostgreSQL (Render Free's disk is ephemeral and the service sleeps after ~15 min idle).
+# Every `sync: false` variable is prompted for in the dashboard — nothing secret is committed.
+services:
+  - type: web
+    name: invoiceflow-n8n
+    runtime: image
+    image:
+      url: docker.io/n8nio/n8n:latest   # pin a tested version (e.g. :1.x.y) for production
+    plan: free
+    region: oregon
+    healthCheckPath: /healthz
+    envVars:
+      # --- persistence: external PostgreSQL (e.g. Neon free). Use the DIRECT (non-pooled) host. ---
+      - key: DB_TYPE
+        value: postgresdb
+      - key: DB_POSTGRESDB_HOST
+        sync: false
+      - key: DB_POSTGRESDB_PORT
+        value: "5432"
+      - key: DB_POSTGRESDB_DATABASE
+        sync: false
+      - key: DB_POSTGRESDB_USER
+        sync: false
+      - key: DB_POSTGRESDB_PASSWORD
+        sync: false
+      - key: DB_POSTGRESDB_SSL_ENABLED
+        value: "true"
+      - key: DB_POSTGRESDB_CONNECTION_TIMEOUT
+        value: "60000"   # tolerate a sleeping Postgres (Neon scale-to-zero) on cold start
+
+      # --- identity / URLs ---
+      - key: N8N_ENCRYPTION_KEY       # encrypts stored credentials; generate once, never change
+        sync: false
+      - key: N8N_HOST
+        sync: false                    # e.g. invoiceflow-n8n.onrender.com (no scheme)
+      - key: N8N_PROTOCOL
+        value: https
+      - key: N8N_PORT
+        value: "10000"                 # Render's default PORT
+      - key: WEBHOOK_URL
+        sync: false                    # e.g. https://invoiceflow-n8n.onrender.com/
+      - key: N8N_PROXY_HOPS
+        value: "1"
+
+      # --- keep it small & private on a free instance (512 MB RAM, small DB) ---
+      - key: N8N_DEFAULT_BINARY_DATA_MODE
+        value: filesystem
+      - key: EXECUTIONS_DATA_SAVE_ON_SUCCESS
+        value: none                    # executions would contain invoice data and the AI key
+      - key: EXECUTIONS_DATA_PRUNE
+        value: "true"
+      - key: EXECUTIONS_DATA_MAX_AGE
+        value: "48"                    # hours
+      - key: N8N_DIAGNOSTICS_ENABLED
+        value: "false"
+      - key: N8N_PERSONALIZATION_ENABLED
+        value: "false"
+      - key: GENERIC_TIMEZONE
+        value: UTC
