@@ -2,13 +2,10 @@ import { Schema, model, models, type Model, type InferSchemaType } from "mongoos
 
 const userSchema = new Schema(
   {
+    /** Clerk user id (user_…). Authentication lives in Clerk; this record only owns the app data. */
+    clerkId: { type: String, unique: true, sparse: true, index: true },
     name: { type: String, required: true, trim: true, maxlength: 120 },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
-    passwordHash: { type: String, required: true },
-    passwordResetTokenHash: { type: String, default: null },
-    passwordResetExpires: { type: Date, default: null },
-    /** Bumped on password change/reset so older sessions stop validating. */
-    tokenVersion: { type: Number, default: 0 },
   },
   { timestamps: true },
 );

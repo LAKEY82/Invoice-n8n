@@ -11,6 +11,7 @@ export function getStorage(): StorageService {
     secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
     bucket: process.env.R2_BUCKET_NAME,
     endpoint: process.env.R2_ENDPOINT,
+    region: process.env.S3_REGION,
   });
   return instance;
 }

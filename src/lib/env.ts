@@ -3,7 +3,6 @@ import { z } from "zod";
 const schema = z.object({
   NODE_ENV: z.string().default("development"),
   MONGODB_URI: z.string().min(1, "MONGODB_URI is required"),
-  JWT_SECRET: z.string().min(32, "JWT_SECRET must be at least 32 characters"),
   ENCRYPTION_KEY: z.string().min(32, "ENCRYPTION_KEY must be at least 32 characters"),
   NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),
 
@@ -31,8 +30,6 @@ const schema = z.object({
   DOWNLOAD_URL_TTL_SECONDS: z.coerce.number().default(300),
   NEXT_PUBLIC_POLL_INTERVAL_MS: z.coerce.number().default(7000),
 
-  RESEND_API_KEY: z.string().optional(),
-  EMAIL_FROM: z.string().optional(),
 });
 
 export type Env = z.infer<typeof schema>;

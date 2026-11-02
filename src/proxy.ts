@@ -1,33 +1,17 @@
-import { NextResponse, type NextRequest } from "next/server";
-import { jwtVerify } from "jose";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-const COOKIE = "invoiceflow_session";
+const isProtectedPage = createRouteMatcher(["/dashboard(.*)"]);
 
-/** Optimistic gate only — every page and route handler re-validates the session server-side. */
-export async function proxy(req: NextRequest) {
-  const { pathname } = req.nextUrl;
-  const token = req.cookies.get(COOKIE)?.value;
-  let valid = false;
-  if (token && process.env.JWT_SECRET) {
-    try {
-      await jwtVerify(token, new TextEncoder().encode(process.env.JWT_SECRET), { algorithms: ["HS256"] });
-      valid = true;
-    } catch {
-      valid = false;
-    }
-  }
-
-  if (pathname.startsWith("/dashboard") && !valid) {
-    const url = new URL("/login", req.url);
-    url.searchParams.set("next", pathname);
-    return NextResponse.redirect(url);
-  }
-  if ((pathname === "/login" || pathname === "/register") && valid) {
-    return NextResponse.redirect(new URL("/dashboard", req.url));
-  }
-  return NextResponse.next();
-}
+/** Optimistic gate for pages only — API route handlers and server components re-validate via requireUser(). */
+export default clerkMiddleware(async (auth, req) => {
+  if (isProtectedPage(req)) await auth.protect();
+});
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/login", "/register"],
+  matcher: [
+    // Skip Next.js internals and static files
+    "/((?!_next|[^?]*\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+    "/(api|trpc)(.*)",
+    "/__clerk/(.*)",
+  ],
 };

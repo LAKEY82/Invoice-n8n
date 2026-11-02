@@ -39,8 +39,8 @@ Recovery runs from status polling (while a user watches), `/api/internal/recover
 ## Security
 - Session: HS256 JWT in an `HttpOnly`, `SameSite=Lax`, `Secure` (prod) cookie; validated against the DB on every request (`tokenVersion` revokes sessions on password reset). The edge `proxy.ts` is only an optimistic redirect — every handler re-checks.
 - All invoice queries include the session's `userId`; IDs are never taken from the client. Cross-user access returns 404.
-- Passwords: bcrypt (cost 12), timing-equalised login, generic forgot-password response, hashed single-use reset tokens (30 min).
-- Rate limits (MongoDB-backed) on login, register, forgot/reset, upload, reprocess, export, integrations.
+- Authentication: Clerk (sessions, passwords, reset, MFA). The Clerk user id maps to an app `User` record (created on first sign-in; an existing account with the same email is adopted), and all data is keyed to that record.
+- Rate limits (MongoDB-backed) on upload, reprocess, export, integrations.
 - Integration API keys: AES-256-GCM at rest, never returned (only a masked hint).
 - Internal API and webhook: shared secret, constant-time comparison.
 - Exports neutralise spreadsheet formula injection. Search input is regex-escaped. Security headers set in `next.config.ts`.

@@ -7,10 +7,10 @@ Upload PDFs/images → files go straight to R2 → n8n extracts data with AI →
 ## Quick start (local)
 ```bash
 npm install
-cp .env.example .env.local     # fill MONGODB_URI, JWT_SECRET, ENCRYPTION_KEY, R2_*, N8N_*, GEMINI_API_KEY
+cp .env.example .env.local     # fill MONGODB_URI, NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY, CLERK_SECRET_KEY, ENCRYPTION_KEY, R2_*, N8N_*, GEMINI_API_KEY
 npm run dev                    # http://localhost:3000
 ```
-Minimum to browse the app: `MONGODB_URI`, `JWT_SECRET` (≥32 chars), `ENCRYPTION_KEY` (≥32 chars). Uploads need R2; extraction needs n8n + an AI key. The UI shows honest "not configured" states instead of faking connections.
+Minimum to browse the app: `MONGODB_URI`, Clerk keys, `ENCRYPTION_KEY` (≥32 chars). Uploads need R2; extraction needs n8n + an AI key. The UI shows honest "not configured" states instead of faking connections.
 
 Local n8n: `npx n8n`, import `n8n/invoice-processing-workflow.json`, follow [docs/N8N_RENDER_DEPLOYMENT.md](docs/N8N_RENDER_DEPLOYMENT.md) (§3–4, "Local development").
 

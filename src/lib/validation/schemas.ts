@@ -1,26 +1,6 @@
 import { z } from "zod";
 import { ALLOWED_FILE_TYPES, INVOICE_STATUSES } from "@/types/invoice";
 
-export const registerSchema = z.object({
-  name: z.string().trim().min(2, "Name is too short").max(120),
-  email: z.string().trim().toLowerCase().email("Enter a valid email"),
-  password: z
-    .string()
-    .min(10, "Use at least 10 characters")
-    .max(128)
-    .regex(/[a-zA-Z]/, "Include a letter")
-    .regex(/[0-9]/, "Include a number"),
-});
-export const loginSchema = z.object({
-  email: z.string().trim().toLowerCase().email(),
-  password: z.string().min(1).max(128),
-});
-export const forgotSchema = z.object({ email: z.string().trim().toLowerCase().email() });
-export const resetSchema = z.object({
-  token: z.string().min(20).max(200),
-  password: registerSchema.shape.password,
-});
-
 export const uploadRequestSchema = z.object({
   fileName: z.string().trim().min(1).max(255),
   fileType: z.enum(ALLOWED_FILE_TYPES),

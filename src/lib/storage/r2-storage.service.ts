@@ -14,6 +14,8 @@ export interface R2Config {
   secretAccessKey?: string;
   bucket?: string;
   endpoint?: string;
+  /** "auto" for Cloudflare R2; the real region (e.g. us-east-005) for Backblaze B2 and AWS S3. */
+  region?: string;
 }
 
 export class R2StorageService implements StorageService {
@@ -31,7 +33,7 @@ export class R2StorageService implements StorageService {
       throw new Error("Cloudflare R2 is not configured (R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET_NAME).");
     }
     this.client ??= new S3Client({
-      region: "auto",
+      region: this.cfg.region || "auto",
       endpoint: this.cfg.endpoint || `https://${this.cfg.accountId}.r2.cloudflarestorage.com`,
       credentials: { accessKeyId: this.cfg.accessKeyId!, secretAccessKey: this.cfg.secretAccessKey! },
       // R2 rejects the optional CRC32 checksum headers newer SDK versions add to presigned requests.

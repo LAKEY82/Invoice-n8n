@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { useClerk } from "@clerk/nextjs";
 import { BarChart3, FileText, LayoutDashboard, LogOut, Menu, Plug, Upload, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { api } from "@/lib/api-client";
 
 const NAV = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, exact: true },
@@ -17,14 +17,8 @@ const NAV = [
 
 export function AppShell({ user, children }: { user: { name: string; email: string }; children: React.ReactNode }) {
   const pathname = usePathname();
-  const router = useRouter();
+  const { signOut } = useClerk();
   const [open, setOpen] = useState(false);
-
-  async function logout() {
-    await api("/api/auth/logout", { method: "POST" }).catch(() => {});
-    router.replace("/login");
-    router.refresh();
-  }
 
   const nav = (
     <nav className="flex-1 space-y-1 px-3">
@@ -52,7 +46,7 @@ export function AppShell({ user, children }: { user: { name: string; email: stri
     <div className="border-t border-border p-4">
       <p className="truncate text-sm font-medium text-navy">{user.name}</p>
       <p className="truncate text-xs text-muted">{user.email}</p>
-      <button onClick={logout} className="mt-3 flex items-center gap-2 text-xs font-medium text-slate-600 hover:text-red-600">
+      <button onClick={() => signOut({ redirectUrl: "/login" })} className="mt-3 flex items-center gap-2 text-xs font-medium text-slate-600 hover:text-red-600">
         <LogOut className="h-3.5 w-3.5" /> Sign out
       </button>
     </div>

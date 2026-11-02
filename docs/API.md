@@ -5,11 +5,7 @@ All routes return JSON errors `{ "error": string, "code": string }` (validation 
 ## Auth
 | Method & path | Body | Notes |
 |---|---|---|
-| POST `/api/auth/register` | `name, email, password` (≥10 chars, letter+number) | sets session cookie |
-| POST `/api/auth/login` | `email, password` | rate-limited |
-| POST `/api/auth/logout` | – | clears cookie |
-| POST `/api/auth/forgot-password` | `email` | always 200 |
-| POST `/api/auth/reset-password` | `token, password` | invalidates old sessions |
+Authentication is handled by Clerk (sign-in/sign-up pages at `/login` and `/register`); there are no `/api/auth/*` routes. Every API route resolves the Clerk session to the app user and returns 401 when signed out.
 
 ## Invoices
 | Method & path | Description |
