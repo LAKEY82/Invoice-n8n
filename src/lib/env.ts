@@ -45,6 +45,10 @@ export function env(): Env {
     throw new Error(`Invalid environment configuration — ${issues}`);
   }
   cached = parsed.data;
+  // On Vercel, an unset NEXT_PUBLIC_APP_URL must not fall back to localhost: n8n calls this URL back and cannot reach localhost.
+  if (!process.env.NEXT_PUBLIC_APP_URL && process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+    cached.NEXT_PUBLIC_APP_URL = `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+  }
   return cached;
 }
 
