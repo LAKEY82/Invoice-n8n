@@ -5,7 +5,7 @@ import { getDashboard } from "@/services/dashboard.service";
 
 export const runtime = "nodejs";
 
-export const GET = route(async () => {
+export const GET = route(async (req: Request) => {
   const user = await requireUser();
-  return NextResponse.json(await getDashboard(user.id));
+  return NextResponse.json(await getDashboard(user.id, new URL(req.url).searchParams.get("currency") ?? undefined));
 });

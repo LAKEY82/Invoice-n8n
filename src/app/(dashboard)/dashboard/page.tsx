@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DashboardCharts } from "@/components/dashboard/charts";
+import { CurrencySelect } from "@/components/dashboard/currency-select";
 import { InFlightRefresher } from "@/components/invoices/in-flight-refresher";
 import { formatDate, formatMoney } from "@/lib/utils";
 import { getStorage } from "@/lib/storage/storage.factory";
@@ -16,15 +17,18 @@ import { n8nConfigured } from "@/lib/n8n/client";
 export const metadata: Metadata = { title: "Dashboard" };
 export const dynamic = "force-dynamic";
 
-export default async function DashboardPage() {
+export default async function DashboardPage({ searchParams }: { searchParams: Promise<{ currency?: string | string[] }> }) {
   const user = await requireUser();
-  const data = await getDashboard(user.id);
+  const { currency } = await searchParams;
+  const data = await getDashboard(user.id, Array.isArray(currency) ? currency[0] : currency);
   const s = data.stats;
   const missing = [!getStorage().isConfigured() && "Cloudflare R2 storage", !n8nConfigured() && "n8n processing"].filter(Boolean);
 
   const cards = [
     { label: "Total Invoices", value: s.totalInvoices.toLocaleString(), icon: FileText, tone: "text-primary bg-primary/10" },
-    { label: "Total Invoice Value", value: formatMoney(s.totalValue, data.currency), icon: Receipt, tone: "text-indigo-600 bg-indigo-50", note: data.otherCurrencyCount ? `+ ${data.otherCurrencyCount} in other currencies` : undefined },
+    { label: "Total Invoice Value", value: formatMoney(s.totalValue, data.currency), icon: Receipt, tone: "text-indigo-600 bg-indigo-50", note: data.otherCurrencyCount
+        ? `${data.otherCurrencyCount} invoice${data.otherCurrencyCount > 1 ? "s" : ""} not converted (no exchange rate)`
+        : data.rateDate ? `Converted at ECB rates of ${data.rateDate}` : undefined },
     { label: "Processed Invoices", value: s.processed.toLocaleString(), icon: CheckCircle2, tone: "text-emerald-600 bg-emerald-50" },
     { label: "Pending Review", value: s.pendingReview.toLocaleString(), icon: Clock, tone: "text-orange-600 bg-orange-50" },
     { label: "Failed Processing", value: s.failed.toLocaleString(), icon: XCircle, tone: "text-red-600 bg-red-50" },
@@ -37,7 +41,12 @@ export default async function DashboardPage() {
       <PageHeader
         title="Dashboard"
         description="Live overview of your invoice pipeline."
-        actions={<Link href="/dashboard/upload"><Button><Upload className="h-4 w-4" /> Upload invoices</Button></Link>}
+        actions={
+          <div className="flex flex-wrap items-center gap-3">
+            <CurrencySelect value={data.currency} options={data.currencies} />
+            <Link href="/dashboard/upload"><Button><Upload className="h-4 w-4" /> Upload invoices</Button></Link>
+          </div>
+        }
       />
 
       {missing.length > 0 && (
