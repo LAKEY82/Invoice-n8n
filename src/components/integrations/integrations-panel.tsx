@@ -75,7 +75,7 @@ export function IntegrationsPanel({ data }: { data: Data }) {
       {data.ai.map((a) => (
         <Card key={a.provider}>
           <CardHeader>
-            <CardTitle>{NAMES[a.provider]}{data.preferredProvider === a.provider && <span className="ml-2 rounded bg-primary/10 px-1.5 py-0.5 text-[10px] font-semibold text-primary">PREFERRED</span>}</CardTitle>
+            <CardTitle>{NAMES[a.provider]}{data.preferredProvider === a.provider && <span className="ml-2 rounded bg-primary/10 px-1.5 py-0.5 text-[10px] font-semibold text-primary-ink">PREFERRED</span>}</CardTitle>
             <Status ok={a.configured ? a.lastTestOk : false} label={!a.configured ? "No key" : a.lastTestOk === null ? (a.source === "environment" ? "Server key (untested)" : "Not tested") : a.lastTestOk ? "Key verified" : "Verification failed"} />
           </CardHeader>
           <CardContent className="space-y-3">

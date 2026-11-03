@@ -2,15 +2,15 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 const field =
-  "w-full rounded-lg border border-border bg-white px-3 text-sm text-navy placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:bg-slate-50 disabled:text-slate-500";
+  "w-full rounded-xl border border-border bg-slate-50/70 px-3 text-sm text-navy placeholder:text-slate-400 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:bg-slate-50 disabled:text-slate-500";
 
 export const Input = React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>(
-  ({ className, ...props }, ref) => <input ref={ref} className={cn(field, "h-9", className)} {...props} />,
+  ({ className, ...props }, ref) => <input ref={ref} className={cn(field, "h-10", className)} {...props} />,
 );
 Input.displayName = "Input";
 
 export const Select = React.forwardRef<HTMLSelectElement, React.SelectHTMLAttributes<HTMLSelectElement>>(
-  ({ className, ...props }, ref) => <select ref={ref} className={cn(field, "h-9", className)} {...props} />,
+  ({ className, ...props }, ref) => <select ref={ref} className={cn(field, "h-10", className)} {...props} />,
 );
 Select.displayName = "Select";
 

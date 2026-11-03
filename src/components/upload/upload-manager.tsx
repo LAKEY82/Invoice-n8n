@@ -142,7 +142,7 @@ export function UploadManager({ maxBytes }: { maxBytes: number }) {
         onDrop={(e) => { e.preventDefault(); setDragging(false); addFiles(e.dataTransfer.files); }}
       >
         <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
-          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary"><UploadCloud className="h-6 w-6" /></span>
+          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary-ink"><UploadCloud className="h-6 w-6" /></span>
           <div>
             <p className="font-medium text-navy">Drag and drop invoices here</p>
             <p className="mt-1 text-sm text-muted">PDF, JPG or PNG · up to {Math.round(maxBytes / 1024 / 1024)} MB each · multiple files supported</p>
@@ -183,7 +183,7 @@ export function UploadManager({ maxBytes }: { maxBytes: number }) {
                 <div className="flex shrink-0 items-center gap-2">
                   {i.phase === "done" && i.status && <StatusBadge status={i.status} />}
                   {i.phase === "done" && !i.status && <CheckCircle2 className="h-5 w-5 text-emerald-600" />}
-                  {i.phase === "done" && i.invoiceId && <Link href={`/dashboard/invoices/${i.invoiceId}`} className="text-xs font-medium text-primary hover:underline">Open</Link>}
+                  {i.phase === "done" && i.invoiceId && <Link href={`/dashboard/invoices/${i.invoiceId}`} className="text-xs font-medium text-primary-ink hover:underline">Open</Link>}
                   {i.phase === "error" && i.invoiceId !== undefined && <AlertCircle className="h-4 w-4 text-red-500" />}
                   {(i.phase === "error" || i.phase === "cancelled") && !(i.error?.startsWith("Only") || i.error?.startsWith("File is")) && (
                     <Button variant="outline" size="sm" onClick={() => retry(i.key)}><RotateCcw className="h-3.5 w-3.5" /> Retry</Button>

@@ -6,7 +6,7 @@ import { statusLabel } from "@/components/ui/badge";
 import type { DashboardData } from "@/services/dashboard.service";
 import type { InvoiceStatus } from "@/types/invoice";
 
-const PALETTE = ["#2563eb", "#0ea5e9", "#6366f1", "#14b8a6", "#f59e0b", "#94a3b8"];
+const PALETTE = ["var(--primary)", "#0ea5e9", "#6366f1", "#14b8a6", "#f59e0b", "#94a3b8"];
 const STATUS_COLORS: Record<string, string> = {
   APPROVED: "#10b981", REVIEW_REQUIRED: "#f59e0b", PROCESSING: "#2563eb", PENDING: "#94a3b8", FAILED: "#ef4444", DUPLICATE: "#8b5cf6", PENDING_UPLOAD: "#cbd5e1",
 };
@@ -37,7 +37,7 @@ export function DashboardCharts({ data }: { data: DashboardData }) {
                 <XAxis dataKey="month" tickFormatter={monthLabel} {...axis} />
                 <YAxis tickFormatter={compact} {...axis} width={48} />
                 <Tooltip formatter={(v) => money(Number(v))} labelFormatter={(l) => monthLabel(String(l))} />
-                <Bar dataKey="total" name="Spend" fill="#2563eb" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="total" name="Spend" fill="var(--primary)" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           ) : <Empty />}
@@ -55,7 +55,7 @@ export function DashboardCharts({ data }: { data: DashboardData }) {
                 <YAxis allowDecimals={false} {...axis} width={32} />
                 <Tooltip labelFormatter={(l) => dayLabel(String(l))} />
                 <Legend />
-                <Line type="monotone" dataKey="uploaded" name="Uploaded" stroke="#2563eb" strokeWidth={2} dot={false} />
+                <Line type="monotone" dataKey="uploaded" name="Uploaded" stroke="var(--primary-dark)" strokeWidth={2} dot={false} />
                 <Line type="monotone" dataKey="processed" name="Processed" stroke="#10b981" strokeWidth={2} dot={false} />
                 <Line type="monotone" dataKey="failed" name="Failed" stroke="#ef4444" strokeWidth={2} dot={false} />
               </LineChart>

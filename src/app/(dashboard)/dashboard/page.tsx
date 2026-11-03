@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { AlertTriangle, CheckCircle2, Copy, FileText, Loader2, Receipt, Upload, XCircle, Clock } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Copy, FileText, Loader2, Upload, XCircle, Clock } from "lucide-react";
 import { requireUser } from "@/lib/auth/session";
 import { getDashboard } from "@/services/dashboard.service";
 import { PageHeader } from "@/components/layout/page-header";
@@ -25,10 +25,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   const missing = [!getStorage().isConfigured() && "Cloudflare R2 storage", !n8nConfigured() && "n8n processing"].filter(Boolean);
 
   const cards = [
-    { label: "Total Invoices", value: s.totalInvoices.toLocaleString(), icon: FileText, tone: "text-primary bg-primary/10" },
-    { label: "Total Invoice Value", value: formatMoney(s.totalValue, data.currency), icon: Receipt, tone: "text-indigo-600 bg-indigo-50", note: data.otherCurrencyCount
-        ? `${data.otherCurrencyCount} invoice${data.otherCurrencyCount > 1 ? "s" : ""} not converted (no exchange rate)`
-        : data.rateDate ? `Converted at exchange rates of ${data.rateDate}` : undefined },
+    { label: "Total Invoices", value: s.totalInvoices.toLocaleString(), icon: FileText, tone: "text-primary-ink bg-primary/10" },
     { label: "Processed Invoices", value: s.processed.toLocaleString(), icon: CheckCircle2, tone: "text-emerald-600 bg-emerald-50" },
     { label: "Pending Review", value: s.pendingReview.toLocaleString(), icon: Clock, tone: "text-orange-600 bg-orange-50" },
     { label: "Failed Processing", value: s.failed.toLocaleString(), icon: XCircle, tone: "text-red-600 bg-red-50" },
@@ -38,16 +35,25 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   return (
     <div className="animate-fade-up">
       <InFlightRefresher active={s.inFlight > 0} />
-      <PageHeader
-        title="Dashboard"
-        description="Live overview of your invoice pipeline."
-        actions={
+      <PageHeader title="Dashboard" description="Live overview of your invoice pipeline." />
+
+      <section className="mb-6 overflow-hidden rounded-2xl bg-gradient-to-br from-[#111827] to-[#1f2937] p-6 text-white shadow-card md:p-8">
+        <div className="flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <p className="text-sm text-slate-300">Total invoice value</p>
+            <p className="mt-2 text-4xl font-semibold tracking-tight md:text-5xl">{formatMoney(s.totalValue, data.currency)}</p>
+            <p className="mt-2 text-xs text-slate-400">
+              {data.otherCurrencyCount
+                ? `${data.otherCurrencyCount} invoice${data.otherCurrencyCount > 1 ? "s" : ""} not converted (no exchange rate)`
+                : data.rateDate ? `Converted at exchange rates of ${data.rateDate}` : "Approved and awaiting-review invoices"}
+            </p>
+          </div>
           <div className="flex flex-wrap items-center gap-3">
-            <CurrencySelect value={data.currency} options={data.currencies} />
+            <CurrencySelect value={data.currency} options={data.currencies} tone="dark" />
             <Link href="/dashboard/upload"><Button><Upload className="h-4 w-4" /> Upload invoices</Button></Link>
           </div>
-        }
-      />
+        </div>
+      </section>
 
       {missing.length > 0 && (
         <div className="mb-6 flex gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
@@ -64,14 +70,13 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
         </div>
       )}
 
-      <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-6">
+      <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-3 xl:grid-cols-5">
         {cards.map((c) => (
           <Card key={c.label}>
             <CardContent className="p-4">
               <span className={`mb-3 flex h-8 w-8 items-center justify-center rounded-lg ${c.tone}`}><c.icon className="h-4 w-4" /></span>
               <p className="text-xs text-muted">{c.label}</p>
               <p className="mt-1 truncate text-xl font-semibold text-navy">{c.value}</p>
-              {c.note && <p className="mt-0.5 text-[11px] text-muted">{c.note}</p>}
             </CardContent>
           </Card>
         ))}
@@ -82,7 +87,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
       <Card className="mt-4">
         <CardHeader>
           <CardTitle>Recent activity</CardTitle>
-          <Link href="/dashboard/invoices" className="text-xs font-medium text-primary hover:underline">View all</Link>
+          <Link href="/dashboard/invoices" className="text-xs font-medium text-primary-ink hover:underline">View all</Link>
         </CardHeader>
         {data.recent.length === 0 ? (
           <CardContent className="py-10 text-center text-sm text-muted">No invoices yet. Upload your first invoice to get started.</CardContent>

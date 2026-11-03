@@ -1,15 +1,25 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  --background: #f4f5f7;
+  --foreground: #111827;
   --card: #ffffff;
-  --border: #e2e8f0;
-  --muted: #64748b;
-  --primary: #2563eb;
-  --primary-dark: #1d4ed8;
-  --navy: #0f172a;
+  --border: #e8eaee;
+  --muted: #6b7280;
+  --navy: #111827;
+
+  /* Accent theme (default: green). Overridden by [data-theme] below; chosen by the user under Settings. */
+  --primary: #7ddc57;
+  --primary-dark: #5cc43a;
+  --primary-fg: #111827; /* text/icons placed on a primary fill */
+  --primary-ink: #15803d; /* accent used as text/icon colour on light backgrounds */
 }
+
+[data-theme="green"] { --primary: #7ddc57; --primary-dark: #5cc43a; --primary-fg: #111827; --primary-ink: #15803d; }
+[data-theme="blue"] { --primary: #3b82f6; --primary-dark: #2563eb; --primary-fg: #ffffff; --primary-ink: #2563eb; }
+[data-theme="red"] { --primary: #ef4444; --primary-dark: #dc2626; --primary-fg: #ffffff; --primary-ink: #dc2626; }
+[data-theme="orange"] { --primary: #fb923c; --primary-dark: #f97316; --primary-fg: #111827; --primary-ink: #c2410c; }
+[data-theme="pink"] { --primary: #f472b6; --primary-dark: #ec4899; --primary-fg: #111827; --primary-ink: #be185d; }
 
 @theme inline {
   --color-background: var(--background);
@@ -19,9 +29,12 @@
   --color-muted: var(--muted);
   --color-primary: var(--primary);
   --color-primary-dark: var(--primary-dark);
+  --color-primary-fg: var(--primary-fg);
+  --color-primary-ink: var(--primary-ink);
   --color-navy: var(--navy);
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --shadow-card: 0 1px 2px rgba(16, 24, 40, 0.04), 0 6px 20px rgba(16, 24, 40, 0.04);
 }
 
 body {

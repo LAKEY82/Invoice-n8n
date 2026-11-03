@@ -12,7 +12,7 @@ export function SpendChart({ data, currency }: { data: { month: string; total: n
         <XAxis dataKey="month" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} />
         <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} width={56} tickFormatter={(n) => new Intl.NumberFormat("en-US", { notation: "compact" }).format(n)} />
         <Tooltip formatter={(v) => money(Number(v))} />
-        <Bar dataKey="total" name="Spend" fill="#2563eb" radius={[4, 4, 0, 0]} />
+        <Bar dataKey="total" name="Spend" fill="var(--primary)" radius={[4, 4, 0, 0]} />
       </BarChart>
     </ResponsiveContainer>
   );

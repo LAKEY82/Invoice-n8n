@@ -178,7 +178,7 @@ export function ReviewWorkspace({ invoice }: { invoice: InvoiceDTO }) {
                 ))}
               </ul>
               {invoice.isDuplicate && invoice.duplicateOf && (
-                <a href={`/dashboard/invoices/${invoice.duplicateOf}`} className="inline-block text-sm font-medium text-primary hover:underline">View the original invoice →</a>
+                <a href={`/dashboard/invoices/${invoice.duplicateOf}`} className="inline-block text-sm font-medium text-primary-ink hover:underline">View the original invoice →</a>
               )}
             </CardContent>
           </Card>
