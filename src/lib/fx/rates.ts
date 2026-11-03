@@ -1,6 +1,8 @@
 /**
- * Exchange rates from the European Central Bank via Frankfurter (https://frankfurter.dev): free, no API key.
- * Covers ~30 major currencies. Rates are the latest published ones and are cached for 12 hours.
+ * Exchange rates, free and keyless, cached for 12 hours:
+ *  1. open.er-api.com (~160 currencies, including LKR), updated daily
+ *  2. Frankfurter / European Central Bank (~30 major currencies) as a fallback
+ * Rates are the latest published ones, not historical.
  */
 export interface FxRates {
   date: string;
@@ -8,19 +10,29 @@ export interface FxRates {
   rates: Record<string, number>;
 }
 
+async function fetchJson(url: string) {
+  const res = await fetch(url, { next: { revalidate: 43_200 }, signal: AbortSignal.timeout(5000) });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json() as Promise<Record<string, unknown>>;
+}
+
 export async function getRates(): Promise<FxRates | null> {
   try {
-    const res = await fetch("https://api.frankfurter.dev/v1/latest", {
-      next: { revalidate: 43_200 },
-      signal: AbortSignal.timeout(5000),
-    });
-    if (!res.ok) return null;
-    const j = (await res.json()) as { date?: string; rates?: Record<string, number> };
-    if (!j.rates || !j.date) return null;
-    return { date: j.date, rates: { ...j.rates, EUR: 1 } };
+    const j = (await fetchJson("https://open.er-api.com/v6/latest/EUR")) as { result?: string; rates?: Record<string, number>; time_last_update_utc?: string };
+    if (j.result === "success" && j.rates) {
+      const updated = j.time_last_update_utc ? new Date(j.time_last_update_utc) : new Date();
+      return { date: updated.toISOString().slice(0, 10), rates: { ...j.rates, EUR: 1 } };
+    }
   } catch {
-    return null;
+    // fall through to the ECB feed
   }
+  try {
+    const j = (await fetchJson("https://api.frankfurter.dev/v1/latest")) as { date?: string; rates?: Record<string, number> };
+    if (j.rates && j.date) return { date: j.date, rates: { ...j.rates, EUR: 1 } };
+  } catch {
+    // no rates available
+  }
+  return null;
 }
 
 /** Converts between two currencies. Returns null when either currency has no published rate. */

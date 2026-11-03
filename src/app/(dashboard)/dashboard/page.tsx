@@ -28,7 +28,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
     { label: "Total Invoices", value: s.totalInvoices.toLocaleString(), icon: FileText, tone: "text-primary bg-primary/10" },
     { label: "Total Invoice Value", value: formatMoney(s.totalValue, data.currency), icon: Receipt, tone: "text-indigo-600 bg-indigo-50", note: data.otherCurrencyCount
         ? `${data.otherCurrencyCount} invoice${data.otherCurrencyCount > 1 ? "s" : ""} not converted (no exchange rate)`
-        : data.rateDate ? `Converted at ECB rates of ${data.rateDate}` : undefined },
+        : data.rateDate ? `Converted at exchange rates of ${data.rateDate}` : undefined },
     { label: "Processed Invoices", value: s.processed.toLocaleString(), icon: CheckCircle2, tone: "text-emerald-600 bg-emerald-50" },
     { label: "Pending Review", value: s.pendingReview.toLocaleString(), icon: Clock, tone: "text-orange-600 bg-orange-50" },
     { label: "Failed Processing", value: s.failed.toLocaleString(), icon: XCircle, tone: "text-red-600 bg-red-50" },
